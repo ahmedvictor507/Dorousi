@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_routes.dart';
-import '../../../core/app_theme.dart';
 
 class NotificationItem {
   final String id;
@@ -94,8 +93,11 @@ class NotificationsScreen extends StatelessWidget {
                       context.push(item.route!);
                     }
                   },
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  tileColor: item.isRead ? Colors.transparent : AppColors.primaryBlue.withOpacity(0.03),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  tileColor: item.isRead
+                      ? Colors.transparent
+                      : AppColors.primaryBlue.withOpacity(0.03),
                   leading: Container(
                     width: 50,
                     height: 50,
@@ -112,7 +114,8 @@ class NotificationsScreen extends StatelessWidget {
                         child: Text(
                           item.title,
                           style: TextStyle(
-                            fontWeight: item.isRead ? FontWeight.w600 : FontWeight.bold,
+                            fontWeight:
+                                item.isRead ? FontWeight.w600 : FontWeight.bold,
                             fontSize: 15,
                             color: AppColors.textPrimary,
                           ),
@@ -120,7 +123,8 @@ class NotificationsScreen extends StatelessWidget {
                       ),
                       Text(
                         item.time,
-                        style: const TextStyle(fontSize: 11, color: AppColors.textTertiary),
+                        style: const TextStyle(
+                            fontSize: 11, color: AppColors.textTertiary),
                       ),
                     ],
                   ),
@@ -130,7 +134,9 @@ class NotificationsScreen extends StatelessWidget {
                       item.body,
                       style: TextStyle(
                         fontSize: 13,
-                        color: item.isRead ? AppColors.textSecondary : AppColors.textPrimary.withOpacity(0.8),
+                        color: item.isRead
+                            ? AppColors.textSecondary
+                            : AppColors.textPrimary.withOpacity(0.8),
                         height: 1.4,
                       ),
                     ),
@@ -146,7 +152,8 @@ class NotificationsScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.notifications_off_rounded, size: 80, color: AppColors.textTertiary.withOpacity(0.2)),
+          Icon(Icons.notifications_off_rounded,
+              size: 80, color: AppColors.textTertiary.withOpacity(0.2)),
           const SizedBox(height: 20),
           const Text(
             AppStrings.noNotifications,

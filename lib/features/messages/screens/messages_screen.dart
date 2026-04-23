@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
-import '../../../core/app_theme.dart';
 import '../../../models/app_models.dart';
 import 'package:intl/intl.dart' as intl;
 
@@ -12,7 +11,7 @@ class MessagesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Mock Conversations
-    final List<Conversation> _conversations = [
+    final List<Conversation> conversations = [
       Conversation(
         id: '1',
         participantName: 'أ. مروان بناني',
@@ -41,7 +40,8 @@ class MessagesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.messages, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text(AppStrings.messages,
+            style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: const Icon(Icons.mark_chat_read_outlined),
@@ -49,13 +49,13 @@ class MessagesScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: _conversations.isEmpty
+      body: conversations.isEmpty
           ? _buildEmptyState()
           : ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: 10),
-              itemCount: _conversations.length,
+              itemCount: conversations.length,
               itemBuilder: (context, index) {
-                return _ConversationItem(conversation: _conversations[index]);
+                return _ConversationItem(conversation: conversations[index]);
               },
             ),
     );
@@ -72,12 +72,16 @@ class MessagesScreen extends StatelessWidget {
               color: AppColors.primaryBlue.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.chat_bubble_outline_rounded, size: 60, color: AppColors.primaryBlue.withOpacity(0.5)),
+            child: Icon(Icons.chat_bubble_outline_rounded,
+                size: 60, color: AppColors.primaryBlue.withOpacity(0.5)),
           ),
           const SizedBox(height: 24),
           const Text(
             AppStrings.noMessages,
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 16, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600),
           ),
         ],
       ),
@@ -106,12 +110,17 @@ class _ConversationItem extends StatelessWidget {
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: conversation.unreadCount > 0 ? AppColors.primaryGradient : null,
-                    border: conversation.unreadCount == 0 ? Border.all(color: AppColors.divider.withOpacity(0.5)) : null,
+                    gradient: conversation.unreadCount > 0
+                        ? AppColors.primaryGradient
+                        : null,
+                    border: conversation.unreadCount == 0
+                        ? Border.all(color: AppColors.divider.withOpacity(0.5))
+                        : null,
                   ),
                   child: CircleAvatar(
                     radius: 30,
-                    backgroundImage: NetworkImage(conversation.participantImage),
+                    backgroundImage:
+                        NetworkImage(conversation.participantImage),
                   ),
                 ),
                 if (conversation.unreadCount > 0)
@@ -141,7 +150,9 @@ class _ConversationItem extends StatelessWidget {
                       Text(
                         conversation.participantName,
                         style: TextStyle(
-                          fontWeight: conversation.unreadCount > 0 ? FontWeight.bold : FontWeight.w600,
+                          fontWeight: conversation.unreadCount > 0
+                              ? FontWeight.bold
+                              : FontWeight.w600,
                           fontSize: 16,
                           color: AppColors.textPrimary,
                         ),
@@ -150,8 +161,12 @@ class _ConversationItem extends StatelessWidget {
                         _formatTime(conversation.lastMessageTime),
                         style: TextStyle(
                           fontSize: 12,
-                          color: conversation.unreadCount > 0 ? AppColors.primaryBlue : AppColors.textTertiary,
-                          fontWeight: conversation.unreadCount > 0 ? FontWeight.bold : FontWeight.normal,
+                          color: conversation.unreadCount > 0
+                              ? AppColors.primaryBlue
+                              : AppColors.textTertiary,
+                          fontWeight: conversation.unreadCount > 0
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                         ),
                       ),
                     ],
@@ -167,21 +182,27 @@ class _ConversationItem extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             color: AppColors.textSecondary,
-                            fontWeight: conversation.unreadCount > 0 ? FontWeight.w500 : FontWeight.normal,
+                            fontWeight: conversation.unreadCount > 0
+                                ? FontWeight.w500
+                                : FontWeight.normal,
                           ),
                         ),
                       ),
                       if (conversation.unreadCount > 0)
                         Container(
                           margin: const EdgeInsets.only(right: 10),
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             gradient: AppColors.accentGradient,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
                             '${conversation.unreadCount}',
-                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                     ],

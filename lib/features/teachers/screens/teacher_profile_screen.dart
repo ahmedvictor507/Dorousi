@@ -19,7 +19,8 @@ class TeacherProfileScreen extends StatelessWidget {
       name: 'أ. ياسين الإدريسي',
       subject: 'خبير علوم الحاسوب والبرمجة',
       imageUrl: 'https://i.pravatar.cc/150?u=yassine',
-      bio: 'أستاذ متخصص في علوم الحاسوب والبرمجة مع خبرة تزيد عن 10 سنوات في تدريس تقنيات الويب وتطبيقات الجوال. هدفي هو تبسيط المفاهيم المعقدة وجعل البرمجة ممتعة للجميع.',
+      bio:
+          'أستاذ متخصص في علوم الحاسوب والبرمجة مع خبرة تزيد عن 10 سنوات في تدريس تقنيات الويب وتطبيقات الجوال. هدفي هو تبسيط المفاهيم المعقدة وجعل البرمجة ممتعة للجميع.',
       rating: 4.8,
       studentsCount: 3500,
       coursesCount: 12,
@@ -33,7 +34,8 @@ class TeacherProfileScreen extends StatelessWidget {
         teacherName: teacher.name,
         teacherImage: teacher.imageUrl,
         price: 200,
-        imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=500&auto=format&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=500&auto=format&fit=crop',
       ),
       Course(
         id: '3',
@@ -42,7 +44,8 @@ class TeacherProfileScreen extends StatelessWidget {
         teacherName: teacher.name,
         teacherImage: teacher.imageUrl,
         price: 250,
-        imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=500&auto=format&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=500&auto=format&fit=crop',
       ),
     ];
 
@@ -74,7 +77,8 @@ class TeacherProfileScreen extends StatelessWidget {
       pinned: true,
       backgroundColor: AppColors.primaryBlue,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+        icon: const Icon(Icons.arrow_back_ios_new_rounded,
+            color: Colors.white, size: 20),
         onPressed: () => context.pop(),
       ),
       flexibleSpace: FlexibleSpaceBar(
@@ -86,10 +90,11 @@ class TeacherProfileScreen extends StatelessWidget {
                 gradient: AppColors.primaryGradient,
               ),
             ),
-            Center(
+            const Center(
               child: Opacity(
                 opacity: 0.1,
-                child: Icon(Icons.school_rounded, size: 150, color: Colors.white),
+                child:
+                    Icon(Icons.school_rounded, size: 150, color: Colors.white),
               ),
             ),
           ],
@@ -107,7 +112,8 @@ class TeacherProfileScreen extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+              decoration: const BoxDecoration(
+                  color: Colors.white, shape: BoxShape.circle),
               child: CircleAvatar(
                 radius: 60,
                 backgroundImage: NetworkImage(teacher.imageUrl),
@@ -120,7 +126,8 @@ class TeacherProfileScreen extends StatelessWidget {
             ),
             Text(
               teacher.subject,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+              style:
+                  const TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
           ],
         ),
@@ -141,22 +148,29 @@ class TeacherProfileScreen extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildStatItem(context, teacher.rating.toString(), "التقييم", Icons.star_rounded, Colors.amber),
-            _buildStatItem(context, teacher.studentsCount.toString(), "طالب", Icons.people_rounded, AppColors.emeraldGreen),
-            _buildStatItem(context, teacher.coursesCount.toString(), "دورة", Icons.play_lesson_rounded, AppColors.primaryBlue),
+            _buildStatItem(context, teacher.rating.toString(), "التقييم",
+                Icons.star_rounded, Colors.amber),
+            _buildStatItem(context, teacher.studentsCount.toString(), "طالب",
+                Icons.people_rounded, AppColors.emeraldGreen),
+            _buildStatItem(context, teacher.coursesCount.toString(), "دورة",
+                Icons.play_lesson_rounded, AppColors.primaryBlue),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatItem(BuildContext context, String value, String label, IconData icon, Color color) {
+  Widget _buildStatItem(BuildContext context, String value, String label,
+      IconData icon, Color color) {
     return Column(
       children: [
         Icon(icon, color: color, size: 24),
         const SizedBox(height: 8),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+        Text(value,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(label,
+            style:
+                const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
       ],
     );
   }
@@ -167,11 +181,13 @@ class TeacherProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(AppStrings.bio, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(AppStrings.bio,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
           Text(
             teacher.bio,
-            style: const TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.6),
+            style: const TextStyle(
+                fontSize: 14, color: AppColors.textSecondary, height: 1.6),
           ),
         ],
       ),
@@ -196,7 +212,8 @@ class TeacherProfileScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               return CourseCard(
                 course: courses[index],
-                onTap: () => context.push(AppRoutes.courseDetailsPath(courses[index].id)),
+                onTap: () => context
+                    .push(AppRoutes.courseDetailsPath(courses[index].id)),
               );
             },
           ),
@@ -225,7 +242,10 @@ class TeacherProfileScreen extends StatelessWidget {
               ),
               child: const Text(
                 AppStrings.bookPrivate,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
             ),
           ),

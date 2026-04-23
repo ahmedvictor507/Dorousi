@@ -16,7 +16,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final List<String> _categories = [
     AppStrings.all,
     AppStrings.kindergarten,
@@ -25,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   int _selectedCategoryIndex = 0;
 
-  // Mock Data
+  late AnimationController _headerCtrl;
+  late Animation<double> _headerFade;
+
   final List<LiveSession> _liveSessions = [
     LiveSession(
       id: '1',
@@ -61,7 +64,8 @@ class _HomeScreenState extends State<HomeScreen> {
       teacherName: 'أ. مروان بناني',
       teacherImage: 'https://i.pravatar.cc/150?u=marwan',
       price: 150,
-      imageUrl: 'https://images.unsplash.com/photo-1543165796-5426273ea4d1?q=80&w=500&auto=format&fit=crop',
+      imageUrl:
+          'https://images.unsplash.com/photo-1543165796-5426273ea4d1?q=80&w=500&auto=format&fit=crop',
     ),
     Course(
       id: '2',
@@ -70,11 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
       teacherName: 'أ. ياسين الإدريسي',
       teacherImage: 'https://i.pravatar.cc/150?u=yassine',
       price: 200,
-      imageUrl: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=500&auto=format&fit=crop',
+      imageUrl:
+          'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=500&auto=format&fit=crop',
     ),
   ];
 
-  // Filtering logic
   List<LiveSession> get _filteredLiveSessions {
     if (_selectedCategoryIndex == 0) return _liveSessions;
     final category = _categories[_selectedCategoryIndex];
@@ -84,9 +88,24 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Course> get _filteredCourses {
     if (_selectedCategoryIndex == 0) return _courses;
     final category = _categories[_selectedCategoryIndex];
-    // Secondary mapping for better matching in mock data
-    String mapping = category == AppStrings.secondary ? 'ثانوي' : category;
+    final mapping = category == AppStrings.secondary ? 'ثانوي' : category;
     return _courses.where((c) => c.subject.contains(mapping)).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _headerCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+    _headerFade =
+        CurvedAnimation(parent: _headerCtrl, curve: Curves.easeOut);
+    _headerCtrl.forward();
+  }
+
+  @override
+  void dispose() {
+    _headerCtrl.dispose();
+    super.dispose();
   }
 
   @override
@@ -97,43 +116,28 @@ class _HomeScreenState extends State<HomeScreen> {
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // 1. Premium App Bar
           _buildSliverAppBar(context, authProvider),
-
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 2. Animated Search Bar
                 _buildSearchBar(context),
-
-                // 3. Modern Category Tabs
                 _buildCategoryTabs(context),
-
                 const SizedBox(height: 20),
-
-                // 4. Live Sessions Section
                 SectionHeader(
                   title: AppStrings.liveClasses,
                   actionText: AppStrings.viewAll,
                   onActionTap: () {},
                 ),
                 _buildLiveSessionsList(),
-
-                // 5. Registered Courses Section
                 SectionHeader(
                   title: AppStrings.registeredCourses,
                   actionText: AppStrings.viewAll,
                   onActionTap: () {},
                 ),
                 _buildCoursesList(),
-
                 const SizedBox(height: 30),
-
-                // 6. Top Teachers
-                _buildTopTeachersHeader(context),
-                _buildTopTeachersList(context),
-
+                _buildTopTeachersSection(context),
                 const SizedBox(height: 40),
               ],
             ),
@@ -143,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSliverAppBar(BuildContext context, AuthProvider authProvider) {
+  Widget _buildSliverAppBar(
+      BuildContext context, AuthProvider authProvider) {
     return SliverAppBar(
       expandedHeight: 120,
       floating: true,
@@ -164,36 +169,45 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(2),
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: AppColors.primaryGradient,
-            ),
-            child: const CircleAvatar(
-              radius: 20,
-              backgroundColor: AppColors.primaryLight,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=student'),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "${AppStrings.hello} ${authProvider.userName}",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      title: FadeTransition(
+        opacity: _headerFade,
+        child: Row(
+          children: [
+            // Hero avatar — links to profile screen
+            Hero(
+              tag: 'profile_avatar',
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: AppColors.primaryGradient,
+                ),
+                child: const CircleAvatar(
+                  radius: 20,
+                  backgroundColor: AppColors.primaryLight,
+                  backgroundImage:
+                      NetworkImage('https://i.pravatar.cc/150?u=student'),
+                ),
               ),
-              Text(
-                AppStrings.welcomeBack,
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${AppStrings.hello} ${authProvider.userName}',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  AppStrings.welcomeBack,
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
       actions: [
         Stack(
@@ -212,7 +226,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.error,
                   shape: BoxShape.circle,
-                  border: Border.all(color: Theme.of(context).scaffoldBackgroundColor, width: 2),
+                  border: Border.all(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      width: 2),
                 ),
               ),
             ),
@@ -234,19 +250,25 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () => context.push(AppRoutes.search),
             borderRadius: BorderRadius.circular(DourousiTheme.kBorderRadius),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.light ? AppColors.inputFill : Colors.white.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(DourousiTheme.kBorderRadius),
-                border: Border.all(color: AppColors.divider.withOpacity(0.1)),
+                color: Theme.of(context).brightness == Brightness.light
+                    ? AppColors.inputFill
+                    : Colors.white.withOpacity(0.05),
+                borderRadius:
+                    BorderRadius.circular(DourousiTheme.kBorderRadius),
+                border:
+                    Border.all(color: AppColors.divider.withOpacity(0.1)),
               ),
-              child: Row(
-                children: const [
+              child: const Row(
+                children: [
                   Icon(Icons.search_rounded, color: AppColors.textTertiary),
                   SizedBox(width: 12),
                   Text(
                     AppStrings.searchHint,
-                    style: TextStyle(color: AppColors.textTertiary, fontSize: 14),
+                    style: TextStyle(
+                        color: AppColors.textTertiary, fontSize: 14),
                   ),
                 ],
               ),
@@ -272,21 +294,35 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => setState(() => _selectedCategoryIndex = index),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 8),
                 decoration: BoxDecoration(
                   gradient: isSelected ? AppColors.primaryGradient : null,
-                  color: isSelected ? null : (Theme.of(context).brightness == Brightness.light ? Colors.grey.shade200 : Colors.white.withOpacity(0.1)),
+                  color: isSelected
+                      ? null
+                      : (Theme.of(context).brightness == Brightness.light
+                          ? Colors.grey.shade200
+                          : Colors.white.withOpacity(0.1)),
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: isSelected ? [BoxShadow(color: AppColors.primaryBlue.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4))] : null,
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                              color: AppColors.primaryBlue.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4))
+                        ]
+                      : null,
                 ),
-                child: Center(
-                  child: Text(
-                    _categories[index],
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : AppColors.textSecondary,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      fontSize: 13,
-                    ),
+                child: Text(
+                  _categories[index],
+                  style: TextStyle(
+                    color: isSelected
+                        ? Colors.white
+                        : AppColors.textSecondary,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    fontSize: 13,
                   ),
                 ),
               ),
@@ -306,9 +342,13 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.only(right: 20),
         itemCount: _filteredLiveSessions.length,
         itemBuilder: (context, index) {
-          return LiveSessionCard(
-            session: _filteredLiveSessions[index],
-            onTap: () => context.push(AppRoutes.liveSessionDetailsPath(_filteredLiveSessions[index].id)),
+          return StaggeredEntrance(
+            index: index,
+            child: LiveSessionCard(
+              session: _filteredLiveSessions[index],
+              onTap: () => context.push(AppRoutes.liveSessionDetailsPath(
+                  _filteredLiveSessions[index].id)),
+            ),
           );
         },
       ),
@@ -324,68 +364,111 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.only(right: 20),
         itemCount: _filteredCourses.length,
         itemBuilder: (context, index) {
-          return CourseCard(
-            course: _filteredCourses[index],
-            onTap: () => context.push(AppRoutes.courseDetailsPath(_filteredCourses[index].id)),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildTopTeachersHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Row(
-        children: [
-          const Icon(Icons.verified_user_rounded, color: AppColors.primaryBlue, size: 20),
-          const SizedBox(width: 8),
-          Text(
-            "أفضل المعلمين",
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primaryBlue,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTopTeachersList(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: 6,
-        itemBuilder: (context, index) {
-          final String teacherId = index % 2 == 0 ? 'marwan' : 'yassine';
-          return Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: GestureDetector(
-              onTap: () => context.push(AppRoutes.teacherProfilePath(teacherId)),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.emeraldGreen.withOpacity(0.2)),
-                    ),
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=teacher_$index'),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(index % 2 == 0 ? "أ. مروان" : "أ. ياسين", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                ],
-              ),
+          return StaggeredEntrance(
+            index: index,
+            delayMs: 100,
+            child: CourseCard(
+              course: _filteredCourses[index],
+              onTap: () => context.push(
+                  AppRoutes.courseDetailsPath(_filteredCourses[index].id)),
             ),
           );
         },
       ),
+    );
+  }
+
+  Widget _buildTopTeachersSection(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              const AppSectionTitle(
+                  title: 'أفضل المعلمين',
+                  icon: Icons.verified_rounded),
+              const Spacer(),
+              TextButton(
+                onPressed: () {},
+                child: const Row(
+                  children: [
+                    Text(AppStrings.viewAll,
+                        style: TextStyle(
+                            color: AppColors.primaryBlue,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14)),
+                    Icon(Icons.chevron_right,
+                        size: 18, color: AppColors.primaryBlue),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 130,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: 6,
+            itemBuilder: (context, index) {
+              final String teacherId =
+                  index % 2 == 0 ? 'marwan' : 'yassine';
+              final double rating = 4.7 + (index % 3) * 0.1;
+              return StaggeredEntrance(
+                index: index,
+                delayMs: 70,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: GestureDetector(
+                    onTap: () => context
+                        .push(AppRoutes.teacherProfilePath(teacherId)),
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: index % 3 == 0
+                                ? AppColors.primaryGradient
+                                : AppColors.accentGradient,
+                          ),
+                          child: CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(
+                                'https://i.pravatar.cc/150?u=teacher_$index'),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          index % 2 == 0 ? 'أ. مروان' : 'أ. ياسين',
+                          style: const TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.star_rounded,
+                                color: Colors.amber, size: 11),
+                            const SizedBox(width: 2),
+                            Text(rating.toStringAsFixed(1),
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    color: AppColors.textSecondary)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -395,15 +478,20 @@ class _HomeScreenState extends State<HomeScreen> {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.light ? AppColors.inputFill : Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(16),
+        color: Theme.of(context).brightness == Brightness.light
+            ? AppColors.inputFill
+            : Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(DourousiTheme.kBorderRadius),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off_rounded, size: 40, color: AppColors.textTertiary.withOpacity(0.5)),
+          Icon(Icons.search_off_rounded,
+              size: 40,
+              color: AppColors.textTertiary.withOpacity(0.5)),
           const SizedBox(height: 12),
-          const Text(AppStrings.noResults, style: TextStyle(color: AppColors.textSecondary)),
+          const Text(AppStrings.noResults,
+              style: TextStyle(color: AppColors.textSecondary)),
         ],
       ),
     );

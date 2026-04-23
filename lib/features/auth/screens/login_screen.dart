@@ -126,16 +126,20 @@ class _LoginScreenState extends State<LoginScreen>
                         // Welcome text
                         Text(
                           AppStrings.login,
-                          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'مرحباً بعودتك! سجّل دخولك للمتابعة',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.textSecondary,
+                                  ),
                         ),
 
                         const SizedBox(height: 32),
@@ -179,7 +183,8 @@ class _LoginScreenState extends State<LoginScreen>
                         Align(
                           alignment: Alignment.centerLeft,
                           child: TextButton(
-                            onPressed: () => context.push(AppRoutes.forgotPassword),
+                            onPressed: () =>
+                                context.push(AppRoutes.forgotPassword),
                             child: const Text(
                               AppStrings.forgotPassword,
                               style: TextStyle(
@@ -212,8 +217,8 @@ class _LoginScreenState extends State<LoginScreen>
                             Expanded(
                               child: Divider(color: Colors.grey.shade200),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
                               child: Text(
                                 'أو',
                                 style: TextStyle(

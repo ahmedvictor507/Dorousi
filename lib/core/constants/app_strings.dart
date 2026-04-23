@@ -103,6 +103,22 @@ class AppStrings {
   static const String paymentFailed = 'فشلت عملية الدفع';
   static const String currency = 'د.م.'; // MAD
 
+  // ─── Moroccan Specific ──────────────────────────────────────────
+  static const String bankTransfer = 'تحويل بنكي';
+  static const String cashInStore = 'دفع نقدي (وفاكاش / كاش بلوس)';
+  static const String bankAccountHolder = 'صاحب الحساب';
+  static const String ribNumber = 'رقم الحساب (RIB)';
+  static const String bankName = 'اسم البنك';
+  static const String paymentReference = 'مرجع الدفع';
+  static const String copyReference = 'نسخ المرجع';
+  static const String cashInstructions = 'يرجى تقديم هذا المرجع في أقرب وكالة وفاكاش أو كاش بلوس لإتمام عملية الدفع.';
+  static const String bankAttijari = 'التجاري وفا بنك';
+  static const String bankBCP = 'البنك الشعبي';
+  static const String bankBMCE = 'بنك أفريقيا';
+  static const String bankCIH = 'القرض العقاري والسياحي';
+  static const String bankCDM = 'مصرف المغرب';
+  static const String bankSG = 'الشركة العامة';
+
   // ─── Notifications ──────────────────────────────────────────────
   static const String notifications = 'الإشعارات';
   static const String noNotifications = 'لا توجد إشعارات';
@@ -117,6 +133,7 @@ class AppStrings {
 
   // ─── Profile ─────────────────────────────────────────────────────
   static const String editProfile = 'تعديل الملف الشخصي';
+  static const String myBookings = 'حجوزاتي';
   static const String walletBalance = 'رصيد المحفظة';
   static const String badges = 'الشارات';
   static const String settings = 'الإعدادات';

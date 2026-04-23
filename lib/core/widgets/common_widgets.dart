@@ -7,6 +7,8 @@ import 'dart:ui';
 import 'package:intl/intl.dart' as intl;
 import '../constants/app_strings.dart';
 
+// ─── Glass Container ─────────────────────────────────────────────────────────
+
 class GlassContainer extends StatelessWidget {
   final Widget child;
   final double blur;
@@ -36,6 +38,46 @@ class GlassContainer extends StatelessWidget {
   }
 }
 
+// ─── Unified Section Title (fixes inconsistency across all screens) ──────────
+
+class AppSectionTitle extends StatelessWidget {
+  final String title;
+  final IconData? icon;
+
+  const AppSectionTitle({super.key, required this.title, this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 4,
+          height: 20,
+          decoration: BoxDecoration(
+            gradient: AppColors.accentGradient,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 10),
+        if (icon != null) ...[
+          Icon(icon, size: 18, color: AppColors.primaryBlue),
+          const SizedBox(width: 6),
+        ],
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Section Header (home screen — title + "view all") ───────────────────────
+
 class SectionHeader extends StatelessWidget {
   final String title;
   final String actionText;
@@ -55,26 +97,21 @@ class SectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.primaryBlue,
-                ),
-          ),
+          AppSectionTitle(title: title),
           TextButton(
             onPressed: onActionTap,
-            child: Row(
+            child: const Row(
               children: [
                 Text(
-                  actionText,
-                  style: const TextStyle(
+                  AppStrings.viewAll,
+                  style: TextStyle(
                     color: AppColors.primaryBlue,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   ),
                 ),
-                const Icon(Icons.chevron_right, size: 18, color: AppColors.primaryBlue),
+                Icon(Icons.chevron_right,
+                    size: 18, color: AppColors.primaryBlue),
               ],
             ),
           ),
@@ -83,6 +120,175 @@ class SectionHeader extends StatelessWidget {
     );
   }
 }
+
+// ─── Staggered Entrance Animation ────────────────────────────────────────────
+
+class StaggeredEntrance extends StatefulWidget {
+  final Widget child;
+  final int index;
+  final int delayMs;
+
+  const StaggeredEntrance({
+    super.key,
+    required this.child,
+    required this.index,
+    this.delayMs = 80,
+  });
+
+  @override
+  State<StaggeredEntrance> createState() => _StaggeredEntranceState();
+}
+
+class _StaggeredEntranceState extends State<StaggeredEntrance>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _fade;
+  late Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
+    _fade = Tween<double>(begin: 0, end: 1)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+    _slide = Tween<Offset>(begin: const Offset(0, 0.18), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
+
+    Future.delayed(Duration(milliseconds: widget.index * widget.delayMs), () {
+      if (mounted) _ctrl.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _fade,
+      child: SlideTransition(position: _slide, child: widget.child),
+    );
+  }
+}
+
+// ─── Tap Scale (satisfying bounce on tap) ────────────────────────────────────
+
+class TapScale extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+
+  const TapScale({super.key, required this.child, required this.onTap});
+
+  @override
+  State<TapScale> createState() => _TapScaleState();
+}
+
+class _TapScaleState extends State<TapScale>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 140));
+    _scale = Tween<double>(begin: 1.0, end: 0.94)
+        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => _ctrl.forward(),
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _ctrl.reverse(),
+      child: ScaleTransition(scale: _scale, child: widget.child),
+    );
+  }
+}
+
+// ─── Animated Price Counter ───────────────────────────────────────────────────
+
+class AnimatedCounter extends StatefulWidget {
+  final double value;
+  final String suffix;
+  final TextStyle? style;
+
+  const AnimatedCounter({
+    super.key,
+    required this.value,
+    this.suffix = '',
+    this.style,
+  });
+
+  @override
+  State<AnimatedCounter> createState() => _AnimatedCounterState();
+}
+
+class _AnimatedCounterState extends State<AnimatedCounter>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _anim;
+  double _from = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _from = widget.value;
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+    _anim =
+        Tween<double>(begin: widget.value, end: widget.value).animate(_ctrl);
+  }
+
+  @override
+  void didUpdateWidget(AnimatedCounter old) {
+    super.didUpdateWidget(old);
+    if (old.value != widget.value) {
+      _anim = Tween<double>(begin: _from, end: widget.value)
+          .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+      _ctrl
+        ..reset()
+        ..forward();
+      _from = widget.value;
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) => Text(
+        '${_anim.value.toStringAsFixed(0)}${widget.suffix}',
+        style: widget.style,
+      ),
+    );
+  }
+}
+
+// ─── Course Card ─────────────────────────────────────────────────────────────
 
 class CourseCard extends StatelessWidget {
   final Course course;
@@ -98,7 +304,7 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TapScale(
       onTap: onTap,
       child: Container(
         width: isHorizontal ? 240 : double.infinity,
@@ -135,10 +341,14 @@ class CourseCard extends StatelessWidget {
                     opacity: 0.6,
                     borderRadius: BorderRadius.circular(8),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       child: Text(
                         course.subject,
-                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -154,7 +364,8 @@ class CourseCard extends StatelessWidget {
                     course.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   const SizedBox(height: 6),
                   Row(
@@ -164,10 +375,8 @@ class CourseCard extends StatelessWidget {
                         backgroundImage: NetworkImage(course.teacherImage),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        course.teacherName,
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
+                      Text(course.teacherName,
+                          style: Theme.of(context).textTheme.labelSmall),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -188,7 +397,10 @@ class CourseCard extends StatelessWidget {
                         const SizedBox(width: 10),
                         Text(
                           '${(course.progress * 100).toInt()}%',
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: AppColors.emeraldGreen),
+                          style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.emeraldGreen),
                         ),
                       ],
                     ),
@@ -204,7 +416,8 @@ class CourseCard extends StatelessWidget {
                             fontSize: 16,
                           ),
                         ),
-                        const Icon(Icons.add_shopping_cart, size: 18, color: AppColors.primaryBlue),
+                        const Icon(Icons.add_shopping_cart,
+                            size: 18, color: AppColors.primaryBlue),
                       ],
                     ),
                   ],
@@ -217,6 +430,8 @@ class CourseCard extends StatelessWidget {
     );
   }
 }
+
+// ─── Live Session Card ────────────────────────────────────────────────────────
 
 class LiveSessionCard extends StatelessWidget {
   final LiveSession session;
@@ -232,7 +447,7 @@ class LiveSessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return TapScale(
       onTap: onTap,
       child: Container(
         width: isHorizontal ? 280 : double.infinity,
@@ -245,14 +460,14 @@ class LiveSessionCard extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Theme.of(context).cardColor,
-              Theme.of(context).cardColor.withOpacity(0.8),
+              Theme.of(context).cardColor.withValues(alpha: 0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
           borderRadius: DourousiTheme.kCardRadius,
           boxShadow: DourousiTheme.softShadow,
-          border: Border.all(color: AppColors.divider.withOpacity(0.3)),
+          border: Border.all(color: AppColors.divider.withValues(alpha: 0.3)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,39 +490,34 @@ class LiveSessionCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        session.teacherName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        session.subject,
-                        style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                      ),
+                      Text(session.teacherName,
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text(session.subject,
+                          style: const TextStyle(
+                              fontSize: 12, color: AppColors.textSecondary)),
                     ],
                   ),
                 ),
                 if (session.isActive)
-                  GlassContainer(
-                    opacity: 0.1,
-                    blur: 5,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.liveBadgeBg,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.fiber_manual_record, size: 8, color: AppColors.liveBadge),
-                          const SizedBox(width: 4),
-                          const Text(
-                            AppStrings.live,
-                            style: TextStyle(color: AppColors.liveBadge, fontSize: 10, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.liveBadgeBg,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.fiber_manual_record,
+                            size: 8, color: AppColors.liveBadge),
+                        SizedBox(width: 4),
+                        Text(AppStrings.live,
+                            style: TextStyle(
+                                color: AppColors.liveBadge,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold)),
+                      ],
                     ),
                   ),
               ],
@@ -317,14 +527,19 @@ class LiveSessionCard extends StatelessWidget {
               session.title,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.primaryBlue),
+              style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primaryBlue),
             ),
             const SizedBox(height: 12),
             Row(
               children: [
-                _buildInfoTag(context, Icons.access_time_rounded, intl.DateFormat('hh:mm a').format(session.startTime)),
+                _buildInfoTag(Icons.access_time_rounded,
+                    intl.DateFormat('hh:mm a').format(session.startTime)),
                 const SizedBox(width: 12),
-                _buildInfoTag(context, Icons.people_outline_rounded, "${session.availableSeats} ${AppStrings.seats}"),
+                _buildInfoTag(Icons.people_outline_rounded,
+                    '${session.availableSeats} ${AppStrings.seats}'),
               ],
             ),
             const Spacer(),
@@ -336,7 +551,7 @@ class LiveSessionCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.emeraldGreen.withOpacity(0.3),
+                    color: AppColors.emeraldGreen.withValues(alpha: 0.3),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -347,29 +562,30 @@ class LiveSessionCard extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text(
-                  AppStrings.joinNow,
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                ),
+                child: const Text(AppStrings.joinNow,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoTag(BuildContext context, IconData icon, String label) {
+  Widget _buildInfoTag(IconData icon, String label) {
     return Row(
       children: [
         Icon(icon, size: 14, color: AppColors.textTertiary),
         const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
-        ),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 12,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w500)),
       ],
     );
   }

@@ -4,8 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_routes.dart';
-import '../../../core/app_theme.dart';
-import '../../../core/widgets/common_widgets.dart';
 import '../../../models/app_models.dart';
 
 class CourseDetailsScreen extends StatefulWidget {
@@ -16,9 +14,10 @@ class CourseDetailsScreen extends StatefulWidget {
   State<CourseDetailsScreen> createState() => _CourseDetailsScreenState();
 }
 
-class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTickerProviderStateMixin {
+class _CourseDetailsScreenState extends State<CourseDetailsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  
+
   // Mock Data for the specific course
   late Course _course;
   bool _isEnrolled = false;
@@ -27,7 +26,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    
+
     // Simulate fetching course data
     _course = Course(
       id: widget.courseId,
@@ -36,12 +35,37 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
       teacherName: 'أ. مروان بناني',
       teacherImage: 'https://i.pravatar.cc/150?u=marwan',
       price: 150,
-      imageUrl: 'https://images.unsplash.com/photo-1543165796-5426273ea4d1?q=80&w=1200&auto=format&fit=crop',
+      imageUrl:
+          'https://images.unsplash.com/photo-1543165796-5426273ea4d1?q=80&w=1200&auto=format&fit=crop',
       lessons: [
-        Lesson(id: 'l1', title: 'مقدمة في قواعد اللغة', duration: '10:15', isLocked: false, videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
-        Lesson(id: 'l2', title: 'الأزمنة في الإنجليزية', duration: '25:30', isLocked: true, videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
-        Lesson(id: 'l3', title: 'تركيب الجمل الصحيحة', duration: '18:45', isLocked: true, videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
-        Lesson(id: 'l4', title: 'المحادثة اليومية', duration: '30:00', isLocked: true, videoUrl: 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
+        Lesson(
+            id: 'l1',
+            title: 'مقدمة في قواعد اللغة',
+            duration: '10:15',
+            isLocked: false,
+            videoUrl:
+                'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
+        Lesson(
+            id: 'l2',
+            title: 'الأزمنة في الإنجليزية',
+            duration: '25:30',
+            isLocked: true,
+            videoUrl:
+                'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
+        Lesson(
+            id: 'l3',
+            title: 'تركيب الجمل الصحيحة',
+            duration: '18:45',
+            isLocked: true,
+            videoUrl:
+                'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
+        Lesson(
+            id: 'l4',
+            title: 'المحادثة اليومية',
+            duration: '30:00',
+            isLocked: true,
+            videoUrl:
+                'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
       ],
     );
 
@@ -67,7 +91,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
               _buildHeader(),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -107,7 +132,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
         child: CircleAvatar(
           backgroundColor: Colors.white.withOpacity(0.3),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white, size: 20),
             onPressed: () => context.pop(),
           ),
         ),
@@ -149,19 +175,26 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
               ),
               child: Text(
                 _course.subject,
-                style: const TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 12),
+                style: const TextStyle(
+                    color: AppColors.primaryBlue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12),
               ),
             ),
             const Spacer(),
             const Icon(Icons.star_rounded, color: Colors.amber, size: 20),
             const SizedBox(width: 4),
-            const Text("4.9 (240 تقييم)", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            const Text("4.9 (240 تقييم)",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ],
         ),
         const SizedBox(height: 12),
         Text(
           _course.title,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
+          style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary),
         ),
         const SizedBox(height: 16),
         InkWell(
@@ -176,14 +209,20 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_course.teacherName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const Text("معلم لغات معتمد", style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  Text(_course.teacherName,
+                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const Text("معلم لغات معتمد",
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 12)),
                 ],
               ),
               const Spacer(),
               const Text(
                 "عرض الملف",
-                style: TextStyle(color: AppColors.primaryBlue, fontWeight: FontWeight.bold, fontSize: 12),
+                style: TextStyle(
+                    color: AppColors.primaryBlue,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12),
               ),
             ],
           ),
@@ -202,6 +241,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
       child: TabBar(
         controller: _tabController,
         dividerColor: Colors.transparent,
+        indicatorSize: TabBarIndicatorSize.tab,
         indicator: BoxDecoration(
           color: AppColors.primaryBlue,
           borderRadius: BorderRadius.circular(12),
@@ -278,7 +318,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
                 context.push('/course/${widget.courseId}/lesson/${lesson.id}');
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("يرجى شراء الدورة للوصول لهذا الدرس")),
+                  const SnackBar(
+                      content: Text("يرجى شراء الدورة للوصول لهذا الدرس")),
                 );
               }
             },
@@ -289,12 +330,18 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: canPlay ? AppColors.primaryBlue.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                    color: canPlay
+                        ? AppColors.primaryBlue.withOpacity(0.1)
+                        : Colors.grey.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    canPlay ? Icons.play_arrow_rounded : Icons.lock_outline_rounded,
-                    color: canPlay ? AppColors.primaryBlue : AppColors.textTertiary,
+                    canPlay
+                        ? Icons.play_arrow_rounded
+                        : Icons.lock_outline_rounded,
+                    color: canPlay
+                        ? AppColors.primaryBlue
+                        : AppColors.textTertiary,
                   ),
                 ),
                 if (lesson.isCompleted)
@@ -302,8 +349,10 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
                     bottom: 0,
                     right: 0,
                     child: Container(
-                      decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                      child: const Icon(Icons.check_circle, color: AppColors.emeraldGreen, size: 16),
+                      decoration: const BoxDecoration(
+                          color: Colors.white, shape: BoxShape.circle),
+                      child: const Icon(Icons.check_circle,
+                          color: AppColors.emeraldGreen, size: 16),
                     ),
                   ),
               ],
@@ -315,7 +364,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
                 color: canPlay ? AppColors.textPrimary : AppColors.textTertiary,
               ),
             ),
-            subtitle: Text(lesson.duration, style: const TextStyle(fontSize: 12)),
+            subtitle:
+                Text(lesson.duration, style: const TextStyle(fontSize: 12)),
           ),
         );
       },
@@ -332,7 +382,10 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, -5)),
+            BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, -5)),
           ],
         ),
         child: SafeArea(
@@ -342,10 +395,15 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("السعر الإجمالي", style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                  const Text("السعر الإجمالي",
+                      style: TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary)),
                   Text(
                     "${_course.price.toStringAsFixed(0)} ${AppStrings.currency}",
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.primaryBlue),
+                    style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primaryBlue),
                   ),
                 ],
               ),
@@ -358,14 +416,17 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> with SingleTi
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: ElevatedButton(
-                    onPressed: () => context.push(AppRoutes.checkout),
+                    onPressed: () => context.push(AppRoutes.paymentGate),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.transparent,
                       shadowColor: Colors.transparent,
                     ),
                     child: const Text(
                       AppStrings.buyCourse,
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                   ),
                 ),

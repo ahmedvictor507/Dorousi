@@ -12,7 +12,7 @@ class CoursesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Mock Enrolled Data
-    final List<Course> _enrolledCourses = [
+    final List<Course> enrolledCourses = [
       Course(
         id: '1',
         title: 'دورة اللغة الإنجليزية الشاملة',
@@ -21,7 +21,8 @@ class CoursesScreen extends StatelessWidget {
         teacherImage: 'https://i.pravatar.cc/150?u=marwan',
         price: 0,
         progress: 0.65, // 65% progress
-        imageUrl: 'https://images.unsplash.com/photo-1543165796-5426273ea4d1?q=80&w=500&auto=format&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1543165796-5426273ea4d1?q=80&w=500&auto=format&fit=crop',
         isEnrolled: true,
       ),
       Course(
@@ -32,12 +33,13 @@ class CoursesScreen extends StatelessWidget {
         teacherImage: 'https://i.pravatar.cc/150?u=fatima',
         price: 0,
         progress: 0.2, // 20% progress
-        imageUrl: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=500&auto=format&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=500&auto=format&fit=crop',
         isEnrolled: true,
       ),
     ];
 
-    final List<LiveSession> _scheduledSessions = [
+    final List<LiveSession> scheduledSessions = [
       LiveSession(
         id: '1',
         title: 'قوانين نيوتن وحل المسائل',
@@ -57,9 +59,9 @@ class CoursesScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             AppStrings.myCourses,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           elevation: 0,
         ),
@@ -88,8 +90,9 @@ class CoursesScreen extends StatelessWidget {
                 indicatorSize: TabBarIndicatorSize.tab,
                 labelColor: AppColors.primaryBlue,
                 unselectedLabelColor: AppColors.textTertiary,
-                labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                tabs: [
+                labelStyle:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                tabs: const [
                   Tab(text: AppStrings.ongoingCourses),
                   Tab(text: AppStrings.scheduledSessions),
                 ],
@@ -98,8 +101,8 @@ class CoursesScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  _buildOngoingTab(context, _enrolledCourses),
-                  _buildScheduledTab(context, _scheduledSessions),
+                  _buildOngoingTab(context, enrolledCourses),
+                  _buildScheduledTab(context, scheduledSessions),
                 ],
               ),
             ),
@@ -122,7 +125,8 @@ class CoursesScreen extends StatelessWidget {
         return CourseCard(
           course: courses[index],
           isHorizontal: false,
-          onTap: () => context.push(AppRoutes.courseDetailsPath(courses[index].id)),
+          onTap: () =>
+              context.push(AppRoutes.courseDetailsPath(courses[index].id)),
         );
       },
     );
@@ -141,7 +145,8 @@ class CoursesScreen extends StatelessWidget {
         return LiveSessionCard(
           session: sessions[index],
           isHorizontal: false,
-          onTap: () => context.push(AppRoutes.liveSessionDetailsPath(sessions[index].id)),
+          onTap: () => context
+              .push(AppRoutes.liveSessionDetailsPath(sessions[index].id)),
         );
       },
     );
@@ -158,12 +163,16 @@ class CoursesScreen extends StatelessWidget {
               color: AppColors.primaryBlue.withOpacity(0.05),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.menu_book_rounded, size: 60, color: AppColors.primaryBlue.withOpacity(0.5)),
+            child: Icon(Icons.menu_book_rounded,
+                size: 60, color: AppColors.primaryBlue.withOpacity(0.5)),
           ),
           const SizedBox(height: 24),
           Text(
             message,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 16, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 16,
+                fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 32),
           Container(
@@ -176,9 +185,12 @@ class CoursesScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
               ),
-              child: const Text("استكشف الدورات", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: const Text("استكشف الدورات",
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

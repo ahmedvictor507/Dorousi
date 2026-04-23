@@ -5,7 +5,6 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/app_theme.dart';
-import '../../../core/widgets/common_widgets.dart';
 import '../../auth/providers/auth_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -74,27 +73,36 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                        decoration: const BoxDecoration(
+                            color: Colors.white, shape: BoxShape.circle),
                         child: const CircleAvatar(
                           radius: 60,
-                          backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=student'),
+                          backgroundImage: NetworkImage(
+                              'https://i.pravatar.cc/150?u=student'),
                         ),
                       ),
                       Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(color: AppColors.emeraldGreen, shape: BoxShape.circle),
-                        child: const Icon(Icons.edit_rounded, color: Colors.white, size: 18),
+                        decoration: const BoxDecoration(
+                            color: AppColors.emeraldGreen,
+                            shape: BoxShape.circle),
+                        child: const Icon(Icons.edit_rounded,
+                            color: Colors.white, size: 18),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Text(
                     auth.userName,
-                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                    style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                   Text(
                     auth.userEmail.isNotEmpty ? auth.userEmail : auth.userPhone,
-                    style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 14),
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.8), fontSize: 14),
                   ),
                 ],
               ),
@@ -140,7 +148,11 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGlassStat(BuildContext context, {required String title, required String value, required IconData icon, required Color color}) {
+  Widget _buildGlassStat(BuildContext context,
+      {required String title,
+      required String value,
+      required IconData icon,
+      required Color color}) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -161,9 +173,13 @@ class ProfileScreen extends StatelessWidget {
             child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(height: 16),
-          Text(title, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+          Text(title,
+              style: const TextStyle(
+                  fontSize: 12, color: AppColors.textSecondary)),
           const SizedBox(height: 4),
-          Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+          Text(value,
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
         ],
       ),
     );
@@ -180,28 +196,43 @@ class ProfileScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            _buildMenuItem(context, Icons.person_outline_rounded, AppStrings.editProfile, () {}),
+            _buildMenuItem(context, Icons.person_outline_rounded,
+                AppStrings.editProfile, () {}),
             const Divider(height: 1, indent: 60),
-            _buildMenuItem(context, Icons.notifications_none_rounded, AppStrings.notificationSettings, () {}, 
-              trailing: Switch(value: true, onChanged: (v) {}, activeThumbColor: AppColors.emeraldGreen)),
+            _buildMenuItem(context, Icons.notifications_none_rounded,
+                AppStrings.notificationSettings, () {},
+                trailing: Switch(
+                    value: true,
+                    onChanged: (v) {},
+                    activeThumbColor: AppColors.emeraldGreen)),
             const Divider(height: 1, indent: 60),
-            _buildMenuItem(context, Icons.dark_mode_outlined, AppStrings.darkMode, () {},
-              trailing: Switch(value: false, onChanged: (v) {}, activeThumbColor: AppColors.emeraldGreen)),
+            _buildMenuItem(
+                context, Icons.dark_mode_outlined, AppStrings.darkMode, () {},
+                trailing: Switch(
+                    value: false,
+                    onChanged: (v) {},
+                    activeThumbColor: AppColors.emeraldGreen)),
             const Divider(height: 1, indent: 60),
-            _buildMenuItem(context, Icons.language_rounded, "اللغة (العربية)", () {}),
+            _buildMenuItem(
+                context, Icons.language_rounded, "اللغة (العربية)", () {}),
             const Divider(height: 1, indent: 60),
-            _buildMenuItem(context, Icons.help_outline_rounded, "مركز المساعدة", () {}),
+            _buildMenuItem(
+                context, Icons.help_outline_rounded, "مركز المساعدة", () {}),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, IconData icon, String title, VoidCallback onTap, {Widget? trailing}) {
+  Widget _buildMenuItem(
+      BuildContext context, IconData icon, String title, VoidCallback onTap,
+      {Widget? trailing}) {
     return ListTile(
       leading: Icon(icon, color: AppColors.primaryBlue, size: 24),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
-      trailing: trailing ?? const Icon(Icons.chevron_left_rounded, color: AppColors.textTertiary),
+      title: Text(title,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+      trailing: trailing ??
+          const Icon(Icons.chevron_left_rounded, color: AppColors.textTertiary),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
       onTap: onTap,
     );
@@ -216,14 +247,16 @@ class ProfileScreen extends StatelessWidget {
           foregroundColor: AppColors.error,
           side: const BorderSide(color: AppColors.error),
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.logout_rounded),
-            const SizedBox(width: 12),
-            Text(AppStrings.logout, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Icon(Icons.logout_rounded),
+            SizedBox(width: 12),
+            Text(AppStrings.logout,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           ],
         ),
       ),
@@ -234,12 +267,13 @@ class ProfileScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppStrings.logout),
-        content: Text(AppStrings.logoutConfirm),
+        title: const Text(AppStrings.logout),
+        content: const Text(AppStrings.logoutConfirm),
         actions: [
           TextButton(
             onPressed: () => context.pop(),
-            child: const Text('إلغاء', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text('إلغاء',
+                style: TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -247,7 +281,8 @@ class ProfileScreen extends StatelessWidget {
               auth.logout();
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: const Text('تسجيل الخروج', style: TextStyle(color: Colors.white)),
+            child: const Text('تسجيل الخروج',
+                style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

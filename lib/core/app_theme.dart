@@ -26,7 +26,7 @@ class DourousiTheme {
   // ─── Shadows ─────────────────────────────────────────────────────
   static List<BoxShadow> get softShadow => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.05),
+          color: Colors.black.withValues(alpha: 0.05),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),
@@ -34,7 +34,7 @@ class DourousiTheme {
 
   static List<BoxShadow> get mediumShadow => [
         BoxShadow(
-          color: Colors.black.withOpacity(0.08),
+          color: Colors.black.withValues(alpha: 0.08),
           blurRadius: 20,
           offset: const Offset(0, 8),
         ),
@@ -245,14 +245,14 @@ class DourousiTheme {
       // Input Decoration
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white.withOpacity(0.05),
+        fillColor: Colors.white.withValues(alpha: 0.05),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(kBorderRadius),
@@ -274,9 +274,9 @@ class DourousiTheme {
   static BoxDecoration glassDecoration(
       {double opacity = 0.1, double blur = 10}) {
     return BoxDecoration(
-      color: Colors.white.withOpacity(opacity),
+      color: Colors.white.withValues(alpha: opacity),
       borderRadius: kCardRadius,
-      border: Border.all(color: Colors.white.withOpacity(0.2)),
+      border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
     );
   }
 }

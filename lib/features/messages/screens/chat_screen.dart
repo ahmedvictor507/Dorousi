@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/app_theme.dart';
 import '../../../core/widgets/common_widgets.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -15,12 +13,20 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _msgController = TextEditingController();
-  
+
   // Mock Messages
   final List<Map<String, dynamic>> _messages = [
     {'text': 'مرحباً، هل يمكنني مساعدتك؟', 'isMe': false, 'time': '10:00 AM'},
-    {'text': 'أهلاً يا أستاذ مروان، عندي تساؤل بخصوص درس القواعد.', 'isMe': true, 'time': '10:05 AM'},
-    {'text': 'تفضل يا بني، أنا هنا للإجابة.', 'isMe': false, 'time': '10:06 AM'},
+    {
+      'text': 'أهلاً يا أستاذ مروان، عندي تساؤل بخصوص درس القواعد.',
+      'isMe': true,
+      'time': '10:05 AM'
+    },
+    {
+      'text': 'تفضل يا بني، أنا هنا للإجابة.',
+      'isMe': false,
+      'time': '10:06 AM'
+    },
   ];
 
   void _sendMessage() {
@@ -39,18 +45,23 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: const [
+        title: const Row(
+          children: [
             CircleAvatar(
               radius: 18,
-              backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=marwan'),
+              backgroundImage:
+                  NetworkImage('https://i.pravatar.cc/150?u=marwan'),
             ),
             SizedBox(width: 12),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('أ. مروان بناني', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                Text('متصل الآن', style: TextStyle(fontSize: 10, color: AppColors.emeraldGreen)),
+                Text('أ. مروان بناني',
+                    style:
+                        TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                Text('متصل الآن',
+                    style:
+                        TextStyle(fontSize: 10, color: AppColors.emeraldGreen)),
               ],
             ),
           ],
@@ -68,7 +79,8 @@ class _ChatScreenState extends State<ChatScreen> {
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final msg = _messages[index];
-                return _buildMessageBubble(msg['text'], msg['isMe'], msg['time']);
+                return _buildMessageBubble(
+                    msg['text'], msg['isMe'], msg['time']);
               },
             ),
           ),
@@ -83,7 +95,8 @@ class _ChatScreenState extends State<ChatScreen> {
       alignment: isMe ? Alignment.centerLeft : Alignment.centerRight,
       child: Container(
         margin: const EdgeInsets.only(bottom: 20),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
+        constraints:
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.75),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: isMe ? AppColors.primaryBlue : (Theme.of(context).cardColor),
@@ -102,16 +115,21 @@ class _ChatScreenState extends State<ChatScreen> {
           ],
         ),
         child: Column(
-          crossAxisAlignment: isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          crossAxisAlignment:
+              isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end,
           children: [
             Text(
               text,
-              style: TextStyle(color: isMe ? Colors.white : AppColors.textPrimary, height: 1.4),
+              style: TextStyle(
+                  color: isMe ? Colors.white : AppColors.textPrimary,
+                  height: 1.4),
             ),
             const SizedBox(height: 4),
             Text(
               time,
-              style: TextStyle(fontSize: 10, color: isMe ? Colors.white70 : AppColors.textTertiary),
+              style: TextStyle(
+                  fontSize: 10,
+                  color: isMe ? Colors.white70 : AppColors.textTertiary),
             ),
           ],
         ),
@@ -124,7 +142,8 @@ class _ChatScreenState extends State<ChatScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border(top: BorderSide(color: AppColors.divider.withOpacity(0.3))),
+        border:
+            Border(top: BorderSide(color: AppColors.divider.withOpacity(0.3))),
       ),
       child: SafeArea(
         child: Row(
@@ -141,7 +160,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   ),
                 ),
               ),
@@ -155,7 +175,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   shape: BoxShape.circle,
                   gradient: AppColors.primaryGradient,
                 ),
-                child: const Icon(Icons.send_rounded, color: Colors.white, size: 24),
+                child: const Icon(Icons.send_rounded,
+                    color: Colors.white, size: 24),
               ),
             ),
           ],

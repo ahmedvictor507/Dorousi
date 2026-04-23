@@ -235,8 +235,7 @@ class _SplashScreenState extends State<SplashScreen>
                   const SizedBox(height: 60),
 
                   // Loading or error state
-                  if (_isChecking && !_showNoInternet)
-                    _buildLoadingIndicator(),
+                  if (_isChecking && !_showNoInternet) _buildLoadingIndicator(),
                 ],
               ),
             ),
@@ -317,7 +316,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Container(
                     width: 80,
                     height: 80,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: AppColors.errorLight,
                       shape: BoxShape.circle,
                     ),
@@ -368,9 +367,9 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       elevation: 0,
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Icon(Icons.refresh_rounded, size: 20),
                         SizedBox(width: 8),
                         Text(
