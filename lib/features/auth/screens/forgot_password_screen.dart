@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../providers/auth_provider.dart';
+import '../../../error_handler.dart'; // Import the error handler
 import '../widgets/auth_widgets.dart';
 
 /// Forgot Password Screen
@@ -74,16 +75,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       if (success) {
         context.push(AppRoutes.verifyCode);
       } else if (authProvider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authProvider.errorMessage!),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
+        // Check for specific error message from provider
+        AppErrorHandler.showError(authProvider.errorMessage!);
       }
     }
   }
@@ -142,7 +135,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                       Center(
                         child: Text(
                           AppStrings.forgotPasswordTitle,
-                          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
@@ -152,10 +148,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                         child: Text(
                           'أدخل بريدك الإلكتروني أو رقم هاتفك\nوسنرسل لك رمز التحقق',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
-                                height: 1.6,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.textSecondary,
+                                    height: 1.6,
+                                  ),
                         ),
                       ),
 

@@ -78,9 +78,9 @@ class _BookingScreenState extends State<BookingScreen>
             ),
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              // FIX: left padding accounts for the 56px leading icon width
-              titlePadding:
-                  const EdgeInsets.only(left: 64, right: 16, bottom: 16),
+              // Using directional padding for RTL compatibility
+              titlePadding: const EdgeInsetsDirectional.only(
+                  start: 64, end: 16, bottom: 16),
               title: const Text(
                 AppStrings.bookPrivate,
                 style: TextStyle(
@@ -313,8 +313,8 @@ class _BookingScreenState extends State<BookingScreen>
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        border:
-            Border(top: BorderSide(color: AppColors.divider.withValues(alpha: 0.5))),
+        border: Border(
+            top: BorderSide(color: AppColors.divider.withValues(alpha: 0.5))),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -330,8 +330,9 @@ class _BookingScreenState extends State<BookingScreen>
           height: 56,
           decoration: BoxDecoration(
             gradient: canContinue ? AppColors.primaryGradient : null,
-            color:
-                canContinue ? null : AppColors.textTertiary.withValues(alpha: 0.15),
+            color: canContinue
+                ? null
+                : AppColors.textTertiary.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(DourousiTheme.kBorderRadius),
             boxShadow: canContinue
                 ? [

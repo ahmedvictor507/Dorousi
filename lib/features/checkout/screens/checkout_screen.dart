@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/app_theme.dart';
+import '../../../error_handler.dart'; // Import the error handler
 import '../../../core/widgets/common_widgets.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -34,8 +35,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
-    _shimmerAnim =
-        CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeOut);
+    _shimmerAnim = CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeOut);
   }
 
   @override
@@ -66,15 +66,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(AppStrings.invalidPromo),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-      );
+      AppErrorHandler.showError(AppStrings.invalidPromo);
     }
   }
 
@@ -163,11 +155,11 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             ),
           ),
           const SizedBox(width: 16),
-          Expanded(
+          const Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text('دورة اللغة الإنجليزية الشاملة',
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
@@ -199,8 +191,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             decoration: InputDecoration(
               hintText: 'MAROC20',
               hintStyle: const TextStyle(fontSize: 13, letterSpacing: 1),
-              prefixIcon:
-                  const Icon(Icons.local_offer_outlined, size: 18),
+              prefixIcon: const Icon(Icons.local_offer_outlined, size: 18),
               suffixIcon: _promoApplied
                   ? const Icon(Icons.check_circle,
                       color: AppColors.emeraldGreen)
@@ -208,7 +199,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               filled: true,
               fillColor: AppColors.inputFill,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(DourousiTheme.kBorderRadius),
+                borderRadius:
+                    BorderRadius.circular(DourousiTheme.kBorderRadius),
                 borderSide: BorderSide.none,
               ),
             ),
@@ -236,9 +228,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             child: Text(
               AppStrings.apply,
               style: TextStyle(
-                  color: _promoApplied
-                      ? AppColors.textTertiary
-                      : Colors.white,
+                  color: _promoApplied ? AppColors.textTertiary : Colors.white,
                   fontWeight: FontWeight.bold),
             ),
           ),
@@ -253,11 +243,11 @@ class _CheckoutScreenState extends State<CheckoutScreen>
       builder: (_, child) {
         return Container(
           padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: _promoApplied
-                  ? AppColors.emeraldGreen
-                      .withValues(alpha: 0.05 + _shimmerAnim.value * 0.08)
-                  : AppColors.primaryBlue.withValues(alpha: 0.03),
+          decoration: BoxDecoration(
+            color: _promoApplied
+                ? AppColors.emeraldGreen
+                    .withValues(alpha: 0.05 + _shimmerAnim.value * 0.08)
+                : AppColors.primaryBlue.withValues(alpha: 0.03),
             borderRadius: BorderRadius.circular(DourousiTheme.kBorderRadius),
             border: Border.all(
               color: _promoApplied
@@ -319,9 +309,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: isDiscount
-                  ? AppColors.emeraldGreen
-                  : AppColors.textPrimary),
+              color:
+                  isDiscount ? AppColors.emeraldGreen : AppColors.textPrimary),
         ),
       ],
     );
@@ -377,8 +366,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
-            borderRadius:
-                BorderRadius.circular(DourousiTheme.kBorderRadius),
+            borderRadius: BorderRadius.circular(DourousiTheme.kBorderRadius),
             boxShadow: [
               BoxShadow(
                   color: AppColors.primaryBlue.withValues(alpha: 0.25),
@@ -393,8 +381,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               shadowColor: Colors.transparent,
               disabledBackgroundColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(
-                      DourousiTheme.kBorderRadius)),
+                  borderRadius:
+                      BorderRadius.circular(DourousiTheme.kBorderRadius)),
             ),
             child: _isProcessing
                 ? const SizedBox(

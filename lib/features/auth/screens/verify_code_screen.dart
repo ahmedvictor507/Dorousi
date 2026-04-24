@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../providers/auth_provider.dart';
+import '../../../error_handler.dart'; // Import the error handler
 import '../widgets/auth_widgets.dart';
 
 /// Verify Code Screen
@@ -34,6 +36,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
 
   bool _canResend = false;
   int _resendCountdown = 60;
+  Timer? _timer;
 
   @override
   void initState() {
@@ -66,22 +69,21 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
       _canResend = false;
       _resendCountdown = 60;
     });
-
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 1));
-      if (!mounted) return false;
-      setState(() => _resendCountdown--);
-      if (_resendCountdown <= 0) {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_resendCountdown > 0) {
+        setState(() => _resendCountdown--);
+      } else {
         setState(() => _canResend = true);
-        return false;
+        timer.cancel();
       }
-      return true;
     });
   }
 
   @override
   void dispose() {
     _animController.dispose();
+    _timer?.cancel();
     for (final c in _controllers) {
       c.dispose();
     }
@@ -91,23 +93,12 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
     super.dispose();
   }
 
-  String get _otpCode =>
-      _controllers.map((c) => c.text).join();
+  String get _otpCode => _controllers.map((c) => c.text).join();
 
   Future<void> _handleVerify() async {
     final code = _otpCode;
     if (code.length != 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('يرجى إدخال الرمز كاملاً'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-      return;
+      return AppErrorHandler.showError('يرجى إدخال الرمز كاملاً');
     }
 
     final authProvider = context.read<AuthProvider>();
@@ -119,21 +110,18 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
       if (success) {
         context.push(AppRoutes.resetPassword);
       } else if (authProvider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authProvider.errorMessage!),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
+        // Check for specific error message from provider
+        AppErrorHandler.showError(authProvider.errorMessage!);
       }
     }
   }
 
   void _onOtpDigitChanged(String value, int index) {
+    // Clear provider errors as soon as the user attempts a new input
+    if (context.read<AuthProvider>().errorMessage != null) {
+      context.read<AuthProvider>().clearError();
+    }
+
     if (value.length == 1 && index < 5) {
       _focusNodes[index + 1].requestFocus();
     } else if (value.isEmpty && index > 0) {
@@ -198,9 +186,10 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
                     Center(
                       child: Text(
                         AppStrings.verificationCode,
-                        style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
+                        style:
+                            Theme.of(context).textTheme.displaySmall?.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                ),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -293,7 +282,8 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen>
                                 _startResendTimer();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: const Text('تم إرسال الرمز مجدداً'),
+                                    content:
+                                        const Text('تم إرسال الرمز مجدداً'),
                                     backgroundColor: AppColors.success,
                                     behavior: SnackBarBehavior.floating,
                                     shape: RoundedRectangleBorder(

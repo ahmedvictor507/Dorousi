@@ -5,6 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/app_theme.dart';
+import '../../../error_handler.dart'; // Import the error handler
 import '../../../core/widgets/common_widgets.dart';
 
 class PaymentGateScreen extends StatefulWidget {
@@ -55,14 +56,7 @@ class _PaymentGateScreenState extends State<PaymentGateScreen> {
   }
 
   void _showValidationError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-    );
+    AppErrorHandler.showError(message);
   }
 
   Future<void> _processPayment() async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +9,26 @@ import 'core/app_theme.dart';
 import 'core/router/app_router.dart';
 import 'features/auth/providers/auth_provider.dart';
 
+/// Global key to access ScaffoldMessenger without context
+final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Handle errors that happen outside of the Flutter framework
+  PlatformDispatcher.instance.onError = (error, stack) {
+    // Log the error (e.g., to Sentry or Firebase)
+    debugPrint('Global Error: $error');
+
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      const SnackBar(
+        content: Text('حدث خطأ غير متوقع. يرجى المحاولة لاحقاً'),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+    return true;
+  };
 
   // Lock orientation to portrait for consistent mobile UX
   SystemChrome.setPreferredOrientations([
@@ -60,6 +79,7 @@ class _DourousiAppState extends State<DourousiApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      scaffoldMessengerKey: scaffoldMessengerKey,
       title: 'دروسي - Dourousi',
       debugShowCheckedModeBanner: false,
 

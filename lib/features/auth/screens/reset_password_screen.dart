@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_routes.dart';
 import '../../../core/constants/app_strings.dart';
 import '../providers/auth_provider.dart';
+import '../../../error_handler.dart'; // Import the error handler
 import '../widgets/auth_widgets.dart';
 
 /// Reset Password Screen
@@ -83,16 +84,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
           context.go(AppRoutes.login);
         }
       } else if (authProvider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authProvider.errorMessage!),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        );
+        // Check for specific error message from provider
+        AppErrorHandler.showError(authProvider.errorMessage!);
       }
     }
   }
@@ -153,7 +146,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                       Center(
                         child: Text(
                           AppStrings.newPassword,
-                          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(
                                 fontWeight: FontWeight.w800,
                               ),
                         ),
@@ -163,10 +159,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                         child: Text(
                           'أنشئ كلمة مرور جديدة\nيجب أن تكون 6 أحرف على الأقل',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
-                                height: 1.6,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: AppColors.textSecondary,
+                                    height: 1.6,
+                                  ),
                         ),
                       ),
 

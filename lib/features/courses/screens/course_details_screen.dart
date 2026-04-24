@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_routes.dart';
+import '../../../error_handler.dart'; // Import the error handler
 import '../../../models/app_models.dart';
 
 class CourseDetailsScreen extends StatefulWidget {
@@ -21,11 +22,18 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
   // Mock Data for the specific course
   late Course _course;
   bool _isEnrolled = false;
+  // Local state to track completed lessons for this session
+  final Set<String> _completedLessonIds = {};
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+
+    // 1. Determine enrollment first based on ID patterns to unlock lessons
+    if (widget.courseId == '1' || widget.courseId.contains('enrolled')) {
+      _isEnrolled = true;
+    }
 
     // Simulate fetching course data
     _course = Course(
@@ -49,30 +57,26 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
             id: 'l2',
             title: 'الأزمنة في الإنجليزية',
             duration: '25:30',
-            isLocked: true,
+            // FIX: Lessons are unlocked if the user is enrolled
+            isLocked: !_isEnrolled,
             videoUrl:
                 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
         Lesson(
             id: 'l3',
             title: 'تركيب الجمل الصحيحة',
             duration: '18:45',
-            isLocked: true,
+            isLocked: !_isEnrolled,
             videoUrl:
                 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
         Lesson(
             id: 'l4',
             title: 'المحادثة اليومية',
             duration: '30:00',
-            isLocked: true,
+            isLocked: !_isEnrolled,
             videoUrl:
                 'https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4'),
       ],
     );
-
-    // If ID is '1', assume enrolled for demo purposes if coming from a success redirect later
-    if (widget.courseId == '1_enrolled') {
-      _isEnrolled = true;
-    }
   }
 
   @override
@@ -304,6 +308,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
       itemBuilder: (context, index) {
         final lesson = _course.lessons[index];
         final bool canPlay = _isEnrolled || !lesson.isLocked;
+        // Check if lesson is completed (using mock local state)
+        final bool isCompleted = _completedLessonIds.contains(lesson.id);
 
         return Container(
           margin: const EdgeInsets.only(bottom: 12),
@@ -313,14 +319,19 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
             border: Border.all(color: AppColors.divider.withOpacity(0.3)),
           ),
           child: ListTile(
-            onTap: () {
+            onTap: () async {
               if (canPlay) {
-                context.push('/course/${widget.courseId}/lesson/${lesson.id}');
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text("يرجى شراء الدورة للوصول لهذا الدرس")),
+                // Await the result from the player screen
+                final result = await context.push<bool>(
+                  '/course/${widget.courseId}/lesson/${lesson.id}',
                 );
+
+                // If the player screen returns 'true', mark as completed
+                if (result == true && mounted) {
+                  setState(() => _completedLessonIds.add(lesson.id));
+                }
+              } else {
+                AppErrorHandler.showError("يرجى شراء الدورة للوصول لهذا الدرس");
               }
             },
             leading: Stack(
@@ -344,7 +355,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen>
                         : AppColors.textTertiary,
                   ),
                 ),
-                if (lesson.isCompleted)
+                if (isCompleted)
                   Positioned(
                     bottom: 0,
                     right: 0,
